@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OJCoding.Share.DataModels;
 
-namespace iOSClub.OJCoding.Components;
+namespace iOSClub.OJCoding.Account;
 
 public class Provider(ProtectedSessionStorage sessionStorage) : AuthenticationStateProvider
 {

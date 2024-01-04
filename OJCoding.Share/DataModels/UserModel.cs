@@ -21,6 +21,17 @@ public class UserModel
         
         return $"Name={Name};Password={Password};Courses={builder}";
     }
+    
+    public override bool Equals(object? obj)
+    {
+        if (obj is not UserModel user) return false;
+        return user.Name == Name && user.Password == Password;
+    }
+
+    protected bool Equals(UserModel other)
+    {
+        return other.Name == Name && other.Password == Password;
+    }
 }
 
 public class LearnCourseModel
