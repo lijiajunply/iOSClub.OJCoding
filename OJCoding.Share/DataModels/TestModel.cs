@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace OJCoding.Share.DataModels;
 
@@ -9,9 +10,18 @@ public class TestModel
     [Column(TypeName = "varchar(256)")]
     public string Guid { get; set; }
 
+    public string Name { get; set; }
     public string Intro { get; set; }
     public List<string> Arg { get; set; }
     public string Code { get; set; }
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        foreach (var test in Arg)
+            builder.Append(test+">");
+        
+        return $"Name={Name};Intro={Intro};Code={Code};Arg={builder}";
+    }
 }
 
 /// <summary>

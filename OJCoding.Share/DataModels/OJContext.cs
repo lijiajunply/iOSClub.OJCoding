@@ -27,3 +27,14 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<OJContext>
         return new OJContext(optionsBuilder.Options);
     }
 }
+
+public static class ContextGuidStatic
+{
+    public static string CourseGuid(this CourseModel model) => model.ToString().GetGuid();
+    public static string UserGrid(this UserModel model) => model.ToString().GetGuid();
+    public static string TestGrid(this TestModel model) => model.ToString().GetGuid();
+    public static string LearnCourseGrid(this LearnCourseModel model) => model.ToString().GetGuid();
+    public static string LearnTestGrid(this LearnTestModel model) => model.ToString().GetGuid();
+
+    public static string GetGuid(this string s) => new Guid(s).ToString();
+}

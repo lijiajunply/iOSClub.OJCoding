@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace OJCoding.Share.DataModels;
 
@@ -15,4 +16,12 @@ public class CourseModel
     public string Intro { get; set; }
     public string Material { get; set; }
     public List<TestModel> Tests { get; set; } = [];
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        foreach (var test in Tests)
+            builder.Append(test+">");
+        
+        return $"Name={Name};Intro={Intro};Material={Material};Tests={builder}";
+    }
 }

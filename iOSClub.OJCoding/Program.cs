@@ -21,6 +21,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBootstrapBlazor();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddScoped<DockerHelper>();
 builder.Services.AddScoped<AuthenticationStateProvider, Provider>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
