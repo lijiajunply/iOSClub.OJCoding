@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iOSClub.OJCoding", "iOSClub.OJCoding\iOSClub.OJCoding.csproj", "{07CB57BD-AA30-437B-8B44-26DF1986E82E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iOSClub.OJBlazor", "iOSClub.OJBlazor\iOSClub.OJBlazor.csproj", "{CC243C89-D99C-4BE2-9FDD-3F9D42A1A8F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OJCoding.Share", "OJCoding.Share\OJCoding.Share.csproj", "{F24FFBEA-10ED-4332-ADA9-A23625BABC6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OJBlazor.Share", "OJBlazor.Share\OJBlazor.Share.csproj", "{C88A25A3-EC13-481D-A4EE-BDF673D5D068}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OJBlazor.WebApi", "OJBlazor.WebApi\OJBlazor.WebApi.csproj", "{2E575FDF-F360-4EFE-A603-ECC2CEBDE5A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +12,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{07CB57BD-AA30-437B-8B44-26DF1986E82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07CB57BD-AA30-437B-8B44-26DF1986E82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07CB57BD-AA30-437B-8B44-26DF1986E82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07CB57BD-AA30-437B-8B44-26DF1986E82E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F24FFBEA-10ED-4332-ADA9-A23625BABC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F24FFBEA-10ED-4332-ADA9-A23625BABC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F24FFBEA-10ED-4332-ADA9-A23625BABC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F24FFBEA-10ED-4332-ADA9-A23625BABC6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC243C89-D99C-4BE2-9FDD-3F9D42A1A8F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC243C89-D99C-4BE2-9FDD-3F9D42A1A8F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC243C89-D99C-4BE2-9FDD-3F9D42A1A8F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC243C89-D99C-4BE2-9FDD-3F9D42A1A8F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C88A25A3-EC13-481D-A4EE-BDF673D5D068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C88A25A3-EC13-481D-A4EE-BDF673D5D068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C88A25A3-EC13-481D-A4EE-BDF673D5D068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C88A25A3-EC13-481D-A4EE-BDF673D5D068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E575FDF-F360-4EFE-A603-ECC2CEBDE5A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E575FDF-F360-4EFE-A603-ECC2CEBDE5A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E575FDF-F360-4EFE-A603-ECC2CEBDE5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E575FDF-F360-4EFE-A603-ECC2CEBDE5A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
