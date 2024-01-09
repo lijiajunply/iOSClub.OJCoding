@@ -1,0 +1,83 @@
+﻿@page "/Account/Login"
+@using global::OJBlazor.Share.DataModels
+@using System.Net
+@using System.Net.Http.Headers
+@inject IHttpClientFactory HttpClient
+@inject NavigationManager navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject MessageService MessageService
+
+<Row ItemsPerRow="ItemsPerRow.One">
+    <Card IsShadow="true" IsCenter="true">
+        <BodyTemplate>
+            <h2>登录</h2>
+            <ValidateForm OnValidSubmit="@Done" Model="@Model">
+                <Row ItemsPerRow="ItemsPerRow.One">
+                    <FloatingLabel PlaceHolder="Name" DisplayText="账号" IsGroupBox="true" @bind-Value="@Model.Name" TValue="string"/>
+                    <FloatingLabel PlaceHolder="Password" DisplayText="密码" IsGroupBox="true" TValue="string" @bind-Value="@Model.Id" type="password"/>
+                    <Button style="width: 100%"
+                            IsAsync="true" ButtonType="ButtonType.Submit"
+                            Color="Color.Primary" Icon="oi oi-account-login" Text="登录">
+                    </Button>
+                    <Divider/>
+                    <p>没有账号？去<NavLink href="https://xauat.site/Signup" Match="NavLinkMatch.All">注册</NavLink>一个</p>
+                </Row>
+            </ValidateForm>
+        </BodyTemplate>
+    </Card>
+</Row>
+
+@code {
+
+    public UserModel Model { get; set; } = new();
+
+    private async Task Done(EditContext arg)
+    {
+        if (string.IsNullOrEmpty(Model.Name) || string.IsNullOrEmpty(Model.Id))
+        {
+            await MessageService.Show(new MessageOption() { Content = "没数据" });
+            return;
+        }
+
+        string Jwt;
+        const string _url = "https://api.xauat.site/api";
+        using var client = HttpClient.CreateClient();
+        var model = new LoginModel() { Name = Model.Name, Id = Model.Id };
+        try
+        {
+            using var jsonAsync = await client.PostAsJsonAsync($"{_url}/Member/Login", model);
+            if (jsonAsync.StatusCode == HttpStatusCode.NotFound)
+            {
+                await MessageService.Show(new MessageOption() { Content = "404" });
+                return;
+            }
+
+            Jwt = await jsonAsync.Content.ReadAsStringAsync();
+        }
+        catch (Exception e)
+        {
+            await MessageService.Show(new MessageOption() { Content = e.Message });
+            return;
+        }
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Jwt);
+        using var result = await client.PostAsJsonAsync($"{_url}/President/GetMemberIdentity", model);
+        if (result.StatusCode == HttpStatusCode.NotFound)
+        {
+            await MessageService.Show(new MessageOption() { Content = "异常" });
+            return;
+        }
+
+        Model.Identity = await result.Content.ReadAsStringAsync();
+        var provider = (Provider)AuthStateProvider;
+        await provider.UpdateAuthState(Model);
+        navigation.NavigateTo("", true);
+    }
+
+    public class LoginModel
+    {
+        public string Name { get; set; }
+        public string Id { get; set; }
+    }
+
+}

@@ -7,10 +7,11 @@ namespace OJBlazor.Share.DataModels;
 public class UserModel
 {
     public string Name { get; set; }
+    public string Identity { get; set; }
     
     [Key]
     [Column(TypeName = "varchar(256)")]
     public string Id { get; set; }
 
-    public List<CourseModel> LearnCourses { get; set; } = new();
+    public string LearnCourses { get; set; } = "";
 }

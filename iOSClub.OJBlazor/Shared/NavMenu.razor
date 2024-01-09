@@ -11,19 +11,32 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <i class="fa-solid fa-house" aria-hidden="true"> 主页</i>
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Account" Match="NavLinkMatch.All">
+                        <i class="fa-solid fa-user" aria-hidden="true"> 我的</i>
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Account/Setting" Match="NavLinkMatch.All">
+                        <i class="fa-solid fa-gear" aria-hidden="true"> 用户设置</i>
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Founder, President, TechnologyMinister">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/CourseManage" Match="NavLinkMatch.All">
+                        <i class="fa-solid fa-folder-open" aria-hidden="true"> 管理课程</i>
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
 

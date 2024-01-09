@@ -11,6 +11,7 @@ public class CourseModel
 {
     [Key]
     [Column(TypeName = "varchar(256)")]
+    public string HashName { get; set; }
     public string Name { get; set; }
     public string Intro { get; set; }
     public string Material { get; set; }

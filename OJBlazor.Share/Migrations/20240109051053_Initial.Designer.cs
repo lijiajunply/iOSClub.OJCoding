@@ -10,7 +10,7 @@ using OJBlazor.Share.DataModels;
 namespace OJBlazor.Share.Migrations
 {
     [DbContext(typeof(OJContext))]
-    [Migration("20240109044544_Initial")]
+    [Migration("20240109051053_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace OJBlazor.Share.Migrations
 
             modelBuilder.Entity("OJBlazor.Share.DataModels.CourseModel", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("HashName")
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("Intro")
@@ -32,19 +32,18 @@ namespace OJBlazor.Share.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserModelId")
-                        .HasColumnType("varchar(256)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.HasKey("Name");
-
-                    b.HasIndex("UserModelId");
+                    b.HasKey("HashName");
 
                     b.ToTable("CourseModels");
                 });
 
             modelBuilder.Entity("OJBlazor.Share.DataModels.TestModel", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("HashName")
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("Arg")
@@ -55,16 +54,20 @@ namespace OJBlazor.Share.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CourseModelName")
+                    b.Property<string>("CourseModelHashName")
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("Intro")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("CourseModelName");
+                    b.HasKey("HashName");
+
+                    b.HasIndex("CourseModelHashName");
 
                     b.ToTable("TestModels");
                 });
@@ -73,6 +76,14 @@ namespace OJBlazor.Share.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Authorization")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LearnCourses")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -83,28 +94,16 @@ namespace OJBlazor.Share.Migrations
                     b.ToTable("UserModels");
                 });
 
-            modelBuilder.Entity("OJBlazor.Share.DataModels.CourseModel", b =>
-                {
-                    b.HasOne("OJBlazor.Share.DataModels.UserModel", null)
-                        .WithMany("LearnCourses")
-                        .HasForeignKey("UserModelId");
-                });
-
             modelBuilder.Entity("OJBlazor.Share.DataModels.TestModel", b =>
                 {
                     b.HasOne("OJBlazor.Share.DataModels.CourseModel", null)
                         .WithMany("Tests")
-                        .HasForeignKey("CourseModelName");
+                        .HasForeignKey("CourseModelHashName");
                 });
 
             modelBuilder.Entity("OJBlazor.Share.DataModels.CourseModel", b =>
                 {
                     b.Navigation("Tests");
-                });
-
-            modelBuilder.Entity("OJBlazor.Share.DataModels.UserModel", b =>
-                {
-                    b.Navigation("LearnCourses");
                 });
 #pragma warning restore 612, 618
         }
