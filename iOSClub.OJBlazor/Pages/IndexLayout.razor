@@ -1,0 +1,40 @@
+﻿@using iOSClub.OJBlazor.AboutPages
+@inherits LayoutComponentBase
+@layout MainLayout
+
+<AuthorizeView>
+    <Authorized>
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu/>
+            </div>
+
+            <main>
+                <div class="top-row px-4">
+                    <Logout ImageUrl="personal.png" UserName="@context.User.Identity!.Name">
+                        <LinkTemplate>
+                            <a href="/Account"><i class="fa-solid fa-suitcase"></i>个人中心</a>
+                            <a href="/Account/Setting"><i class="fa-solid fa-cog"></i>设置</a>
+                            <LogoutLink/>
+                        </LinkTemplate>
+                    </Logout>
+                </div>
+
+                <article class="content px-4">
+                    <CascadingValue Value="context.User.ToUser()">
+                        @Body
+                    </CascadingValue>
+                </article>
+            </main>
+        </div>
+    </Authorized>
+
+    <Authorizing>
+        <p>正在登录中</p>
+    </Authorizing>
+    <NotAuthorized>
+        <article class="content px-4 body">
+            <iOSClub.OJBlazor.AboutPages.AboutIndex/>
+        </article>
+    </NotAuthorized>
+</AuthorizeView>

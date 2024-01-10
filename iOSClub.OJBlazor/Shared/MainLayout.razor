@@ -2,37 +2,4 @@
 
 <PageTitle>西建大iOS Club在线判题系统</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <AuthorizeView>
-                <Authorized>
-                    <Logout ImageUrl="personal.png" UserName="@context.User.Identity!.Name">
-                        <LinkTemplate>
-                            <a href="/Account"><i class="fa-solid fa-suitcase"></i>个人中心</a>
-                            <a href="/Account/Setting"><i class="fa-solid fa-cog"></i>设置</a>
-                            <LogoutLink/>
-                        </LinkTemplate>
-                    </Logout>
-                </Authorized>
-                <Authorizing>
-                    <p>正在登录中</p>
-                </Authorizing>
-                <NotAuthorized>
-                    <a href="/Account/Login">
-                        <i class="fa fa-sign-in" aria-hidden="true">  登录</i>
-                    </a>
-                </NotAuthorized>
-            </AuthorizeView>
-
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@Body

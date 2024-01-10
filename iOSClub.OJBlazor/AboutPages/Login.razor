@@ -7,28 +7,32 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject MessageService MessageService
 
-<Row ItemsPerRow="ItemsPerRow.One">
-    <Card IsShadow="true" IsCenter="true">
-        <BodyTemplate>
-            <h2>登录</h2>
-            <ValidateForm OnValidSubmit="@Done" Model="@Model">
-                <Row ItemsPerRow="ItemsPerRow.One">
-                    <FloatingLabel PlaceHolder="Name" DisplayText="账号" IsGroupBox="true" @bind-Value="@Model.Name" TValue="string"/>
-                    <FloatingLabel PlaceHolder="Password" DisplayText="密码" IsGroupBox="true" TValue="string" @bind-Value="@Model.Id" type="password"/>
-                    <Button style="width: 100%"
-                            IsAsync="true" ButtonType="ButtonType.Submit"
-                            Color="Color.Primary" Icon="oi oi-account-login" Text="登录">
-                    </Button>
-                    <Divider/>
-                    <p>没有账号？去<NavLink href="https://xauat.site/Signup" Match="NavLinkMatch.All">注册</NavLink>一个</p>
-                </Row>
-            </ValidateForm>
-        </BodyTemplate>
-    </Card>
-</Row>
+<div class="content">
+    <Row ItemsPerRow="ItemsPerRow.Three">
+        <br/>
+        <Card IsShadow="true" IsCenter="true">
+            <BodyTemplate>
+                <h2>登录</h2>
+                <ValidateForm OnValidSubmit="@Done" Model="@Model">
+                    <Row ItemsPerRow="ItemsPerRow.One">
+                        <FloatingLabel PlaceHolder="Name" DisplayText="账号" IsGroupBox="true" @bind-Value="@Model.Name" TValue="string"/>
+                        <FloatingLabel PlaceHolder="Password" DisplayText="密码" IsGroupBox="true" TValue="string" @bind-Value="@Model.Id" type="password"/>
+                        <Button style="width: 100%"
+                                IsAsync="true" ButtonType="ButtonType.Submit"
+                                Color="Color.Primary" Icon="oi oi-account-login" Text="登录">
+                        </Button>
+                        <Divider/>
+                        <p>没有账号？去<NavLink href="https://xauat.site/Signup" Match="NavLinkMatch.All">注册</NavLink>一个</p>
+                    </Row>
+                </ValidateForm>
+            </BodyTemplate>
+        </Card>
+        <br/>
+    </Row>
+</div>
+
 
 @code {
-
     public UserModel Model { get; set; } = new();
 
     private async Task Done(EditContext arg)

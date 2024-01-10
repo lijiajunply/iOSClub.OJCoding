@@ -26,6 +26,19 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
+      <_ContentIncludedByDefault Remove="Account\Logout.razor" />
+      <_ContentIncludedByDefault Remove="Account\Setting.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Account\Logout.razor" />
+      <AdditionalFiles Include="Pages\Account\Setting.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Pages\IndexLayout.razor.css">
+        <DependentUpon>IndexLayout.razor</DependentUpon>
+      </Content>
     </ItemGroup>
 
 </Project>

@@ -1,18 +1,146 @@
 ﻿@page "/CourseManage/{Text?}"
+@using Microsoft.EntityFrameworkCore
+@using global::OJBlazor.Share.DataModels
+@using System.ComponentModel.DataAnnotations
+@inject IDbContextFactory<OJContext> DbFactory
+@inject NavigationManager navigation
+@inject MessageService MessageService
+@inject DialogService DialogService
 
 @if (string.IsNullOrEmpty(Text))
 {
-    
+    <Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
+        <Button Color="Color.None" IsAsync="true" OnClick="@(() => CourseModelDialog(null))">
+            <Card IsCenter="true" IsShadow="true" class="item">
+                <BodyTemplate>
+                    <i class="fa-solid fa-plus 4x content"></i>
+                </BodyTemplate>
+            </Card>
+        </Button>
+
+        @foreach (var item in CourseModels)
+        {
+            <Button Color="Color.None" IsAsync="true" OnClick="@(() => CourseModelDialog(item))">
+                <Card IsCenter="true" IsShadow="true" class="item">
+                    <BodyTemplate>
+                        <h6>@item.Name</h6>
+                        <p>@item.Intro</p>
+                    </BodyTemplate>
+                </Card>
+            </Button>
+        }
+    </Row>
+}
+else
+{
+    <Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
+        <Button Color="Color.None">
+            <Card IsCenter="true" IsShadow="true" class="item">
+                <BodyTemplate>
+                    <i class="fa-solid fa-plus 4x content"></i>
+                </BodyTemplate>
+            </Card>
+        </Button>
+        @foreach (var item in TestModels)
+        {
+            <Card IsCenter="true" IsShadow="true" class="item">
+                <BodyTemplate>
+                    <h6>@item.Name</h6>
+                    <p>@item.Intro</p>
+                </BodyTemplate>
+            </Card>
+        }
+    </Row>
 }
 
 @code {
-    [Parameter] 
-    public string? Text { get; set; }
+    [Parameter] public string? Text { get; set; }
+
+    private List<CourseModel> CourseModels { get; set; } = new();
+    private List<TestModel> TestModels { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+        await using var context = await DbFactory.CreateDbContextAsync();
+        if (string.IsNullOrEmpty(Text))
+        {
+            CourseModels = await context.CourseModels.ToListAsync();
+        }
+        else
+        {
+            var c = await context.CourseModels.Include(x => x.Tests).FirstOrDefaultAsync(x => x.HashName == Text);
+            if (c == null)
+            {
+                await MessageService.Show(new MessageOption() { Content = "没有内容，正在为您跳回" });
+                navigation.NavigateTo("", true);
+                return;
+            }
+
+            TestModels = c.Tests;
+        }
+    }
+
+    private async Task CourseModelDialog(CourseModel? model)
+    {
+        var m = new DialogCourseModel();
+        if (model != null)
+        {
+            m.Intro = model.Intro;
+            m.Name = model.Name;
+            m.HashName = model.HashName;
+        }
+
+        var items = Utility.GenerateEditorItems<DialogCourseModel>();
+
+        var option = new EditDialogOption<DialogCourseModel>()
+        {
+            Title = "课程",
+            Model = m,
+            Items = items,
+            ItemsPerRow = 1,
+            RowType = RowType.Inline,
+            OnEditAsync = async context =>
+            {
+                if (context.Model is not DialogCourseModel courseModel) return false;
+                if (string.IsNullOrEmpty(courseModel.Intro) || string.IsNullOrEmpty(courseModel.Name)) return false;
+                await using var dbContextAsync = await DbFactory.CreateDbContextAsync();
+                if (string.IsNullOrEmpty(courseModel.HashName))
+                {
+                    dbContextAsync.CourseModels.Add(new CourseModel()
+                        { HashName = courseModel.ToString().GetHash(), Name = courseModel.Name, Intro = courseModel.Intro });
+                }
+                else
+                {
+                    var result = await dbContextAsync.CourseModels.FirstOrDefaultAsync(x => x.HashName == courseModel.HashName);
+                    if (result == null) return true;
+                    result.Name = courseModel.Name;
+                    result.Intro = courseModel.Intro;
+                }
+
+                await dbContextAsync.SaveChangesAsync();
+
+                return true;
+            }
+        };
+
+        await DialogService.ShowEditDialog(option);
+        StateHasChanged();
+    }
+
+    public class DialogCourseModel
+    {
+        [AutoGenerateColumn(Ignore = true)] public string HashName { get; set; } = "";
+
+        [Required(ErrorMessage = "{0}不能为空")]
+        [AutoGenerateColumn(Order = 10, Filterable = true, Searchable = true)]
+        [Display(Name = "课程名称")]
+        public string Name { get; set; } = "";
+
+        [Display(Name = "简介")]
+        [Required]
+        [AutoGenerateColumn(Order = 40, Sortable = true)]
+        public string Intro { get; set; } = "";
     }
 
 }

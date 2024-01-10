@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OJBlazor.Share.DataModels;
 
-namespace iOSClub.OJBlazor;
+namespace iOSClub.OJBlazor.AboutPages;
 
 public class Provider : AuthenticationStateProvider
 {

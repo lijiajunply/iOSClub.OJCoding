@@ -14,7 +14,6 @@ public class CourseModel
     public string HashName { get; set; }
     public string Name { get; set; }
     public string Intro { get; set; }
-    public string Material { get; set; }
     public List<TestModel> Tests { get; set; } = new();
     public override string ToString()
     {
@@ -22,6 +21,6 @@ public class CourseModel
         foreach (var test in Tests)
             builder.Append(test+">");
         
-        return $"Name={Name};Intro={Intro};Material={Material};Tests={builder}";
+        return $"Name={Name};Intro={Intro};Tests={builder}";
     }
 }
