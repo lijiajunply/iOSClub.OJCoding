@@ -1,75 +1,90 @@
-﻿<header class="header">
-    <h1 class="logo">西建大iOS Club在线判题系统</h1>
-    <nav class="navbar">
-        <ul class="nav-menu">
-            <NavLink class="nav-item" href="/Account/Login" Match="NavLinkMatch.All">
-                <i class="fa fa-sign-in 6x" aria-hidden="true"> 登录</i>
-            </NavLink>
-        </ul>
-    </nav>
-</header>
-
-<br/>
-
-<main>
-    <div class="div">
-        <h3 style="color: #f0f0f0">关于我们</h3>
-        <p style="color: #f0f0f0">西安建筑科技大学iOS众创空间，是由Apple公司资金支持，受南山书院和西安建筑科技大学大学生创新创业实践中心指导的学术型学生团体 </p>
-        <p style="color: #f0f0f0">协会于2019.09月正式注册成立，以助力创新创业发展，指导社团成员进行软件开发，探讨前沿科技为目标。在学校、书院，Apple公司和学生社团的帮助下，提供专业的指导、广阔的平台以及相关的设备，使学生创造性的想法得以尽情发挥，在“众创空间”中感受科技、艺术与未来。在这里，我们将一起分享见解与故事，一起见证成长与坚持，一起探索属于各自的道路。iOS众创空间，让你相遇未来。</p>
-    </div>
-    
-    <div class="div">
-        <h3 style="color: #f0f0f0">我们的使命是：</h3>
-        <Row ColSpan="4" ItemsPerRow="ItemsPerRow.Two">
-            <Card>
+﻿<Layout IsPage="true" >
+    <Header>
+        <h1 class="logo">西建大iOS Club在线判题系统</h1>
+        <nav class="navbar">
+            <ul class="nav-menu">
+                <NavLink Match="NavLinkMatch.All" href="/problems">
+                    题库
+                </NavLink>
+                <NavLink Match="NavLinkMatch.All" href="/contests">
+                    比赛
+                </NavLink>
+                <NavLink Match="NavLinkMatch.All" href="/Account/Login">
+                    <i class="fa fa-sign-in fa-2xl" aria-hidden="true" title="登录"></i>
+                </NavLink>
+            </ul>
+        </nav>
+    </Header>
+    <Main>
+        <Row ColSpan="12" ItemsPerRow="ItemsPerRow.One">
+            <Card class="div">
                 <BodyTemplate>
-                    <Row ItemsPerRow="ItemsPerRow.Two" RowType="RowType.Inline">
-                        <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-proj.jpg"/>
-                        <div>
-                            <h5>平台构建</h5>
-                            <p>助力高校创新创业项目，搭建学生创新创业平台，丰富教学内容，深化校企合作发展</p>
-                        </div>
-                    </Row>
+                    <h3>欢迎来到西建大iOS Club在线判题系统</h3>
+                    <p>西建大iOS Club在线判题系统是一个为西安建筑科技大学iOS Club成员和其他编程爱好者提供的在线编程学习和竞赛平台。</p>
+                    <p>在这里，你可以找到各种编程题目，包括基础的数据结构和算法，以及iOS开发相关的知识和技能。你可以在线提交你的代码，系统会自动编译和运行，给出你的程序的正确性和效率的评测结果。</p>
+                    <p>你还可以参加我们定期举办的编程比赛，和其他选手一较高下，提升你的编程水平和竞争力。我们的比赛题目涵盖了各个领域和难度，有适合初学者的入门题，也有挑战高手的难题。</p>
+                    <p>我们的目标是为西建大iOS Club成员和其他编程爱好者提供一个有趣，有用，有挑战的在线编程学习和竞赛平台，希望你能在这里找到乐趣，收获知识，实现梦想。</p>
                 </BodyTemplate>
             </Card>
-            <Card>
+            <Card class="div">
                 <BodyTemplate>
-                    <Row ItemsPerRow="ItemsPerRow.Two">
-                        <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-teach.jpg"/>
-                        <div>
-                            <h5>成员培育</h5>
-                            <p>培养俱乐部成员的创新创业意识及软件开发、项目编程能力，提升学生自我竞争力，为毕业后服务社会奠定良好基础</p>
-                        </div>
-                    </Row>
 
-                </BodyTemplate>
-            </Card>
-            <Card>
-                <BodyTemplate>
-                    <Row ItemsPerRow="ItemsPerRow.Two">
-                        <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-talk.jpg"/>
-                        <div>
-                            <h5>学术探讨</h5>
-                            <p>探讨学科前沿，提升学校在相关学科的技术开发水平和业界影响力</p>
-                        </div>
-                    </Row>
-                </BodyTemplate>
-            </Card>
-            <Card>
-                <BodyTemplate>
-                    <Row ItemsPerRow="ItemsPerRow.Two">
-                        <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-team.jpg"/>
-                        <div>
-                            <h5>扶持转化</h5>
-                            <p>帮助扶持创业团队，引入社会项目进入高校，同时助力学生的创新成果转化为社会有效财富</p>
-                        </div>
+                    <h3>关于我们</h3>
+                    <p>西安建筑科技大学iOS众创空间，是由Apple公司资金支持，受南山书院和西安建筑科技大学大学生创新创业实践中心指导的学术型学生团体 </p>
+                    <p>协会于2019.09月正式注册成立，以助力创新创业发展，指导社团成员进行软件开发，探讨前沿科技为目标。在学校、书院，Apple公司和学生社团的帮助下，提供专业的指导、广阔的平台以及相关的设备，使学生创造性的想法得以尽情发挥，在“众创空间”中感受科技、艺术与未来。在这里，我们将一起分享见解与故事，一起见证成长与坚持，一起探索属于各自的道路。iOS众创空间，让你相遇未来。</p>
+
+
+                    <Row ColSpan="4" ItemsPerRow="ItemsPerRow.Two">
+                        <Card>
+                            <BodyTemplate>
+                                <Row ItemsPerRow="ItemsPerRow.Two" RowType="RowType.Inline">
+                                    <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-proj.jpg"/>
+                                    <div>
+                                        <h5>平台构建</h5>
+                                        <p>助力高校创新创业项目，搭建学生创新创业平台，丰富教学内容，深化校企合作发展</p>
+                                    </div>
+                                </Row>
+                            </BodyTemplate>
+                        </Card>
+                        <Card>
+                            <BodyTemplate>
+                                <Row ItemsPerRow="ItemsPerRow.Two">
+                                    <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-teach.jpg"/>
+                                    <div>
+                                        <h5>成员培育</h5>
+                                        <p>培养俱乐部成员的创新创业意识及软件开发、项目编程能力，提升学生自我竞争力，为毕业后服务社会奠定良好基础</p>
+                                    </div>
+                                </Row>
+                            </BodyTemplate>
+                        </Card>
+                        <Card>
+                            <BodyTemplate>
+                                <Row ItemsPerRow="ItemsPerRow.Two">
+                                    <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-talk.jpg"/>
+                                    <div>
+                                        <h5>学术探讨</h5>
+                                        <p>探讨学科前沿，提升学校在相关学科的技术开发水平和业界影响力</p>
+                                    </div>
+                                </Row>
+                            </BodyTemplate>
+                        </Card>
+                        <Card>
+                            <BodyTemplate>
+                                <Row ItemsPerRow="ItemsPerRow.Two">
+                                    <ImageViewer class="aboutUs" FitMode="ObjectFitMode.Contain" Url="About/about-team.jpg"/>
+                                    <div>
+                                        <h5>扶持转化</h5>
+                                        <p>帮助扶持创业团队，引入社会项目进入高校，同时助力学生的创新成果转化为社会有效财富</p>
+                                    </div>
+                                </Row>
+                            </BodyTemplate>
+                        </Card>
                     </Row>
                 </BodyTemplate>
             </Card>
         </Row>
-    </div>
-
-</main>
+    </Main>
+</Layout>
 
 
 <style>

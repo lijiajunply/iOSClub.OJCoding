@@ -33,7 +33,7 @@
 
 
 @code {
-    public UserModel Model { get; set; } = new();
+    private LoginModel Model { get; set; } = new();
 
     private async Task Done(EditContext arg)
     {
@@ -46,10 +46,9 @@
         string Jwt;
         const string _url = "https://api.xauat.site/api";
         using var client = HttpClient.CreateClient();
-        var model = new LoginModel() { Name = Model.Name, Id = Model.Id };
         try
         {
-            using var jsonAsync = await client.PostAsJsonAsync($"{_url}/Member/Login", model);
+            using var jsonAsync = await client.PostAsJsonAsync($"{_url}/Member/Login", Model);
             if (jsonAsync.StatusCode == HttpStatusCode.NotFound)
             {
                 await MessageService.Show(new MessageOption() { Content = "404" });
@@ -65,23 +64,22 @@
         }
 
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Jwt);
-        using var result = await client.PostAsJsonAsync($"{_url}/President/GetMemberIdentity", model);
+        using var result = await client.PostAsJsonAsync($"{_url}/President/GetMemberIdentity", Model);
         if (result.StatusCode == HttpStatusCode.NotFound)
         {
             await MessageService.Show(new MessageOption() { Content = "异常" });
             return;
         }
 
-        Model.Identity = await result.Content.ReadAsStringAsync();
+        var model = new UserModel
+        {
+            Identity = await result.Content.ReadAsStringAsync(),
+            Name = Model.Name,
+            Id = Model.Id
+        };
         var provider = (Provider)AuthStateProvider;
-        await provider.UpdateAuthState(Model);
+        await provider.UpdateAuthState(model);
         navigation.NavigateTo("", true);
-    }
-
-    public class LoginModel
-    {
-        public string Name { get; set; }
-        public string Id { get; set; }
     }
 
 }

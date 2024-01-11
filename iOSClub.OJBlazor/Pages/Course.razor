@@ -1,0 +1,16 @@
+﻿@page "/Course/{Text?}"
+
+<PageTitle>@Title</PageTitle>
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+
+    private string Title { get; set; } = "课程";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+}

@@ -70,6 +70,6 @@ main {
 }
 
 .body{
-    background-image: linear-gradient(to bottom right, #ff6b6b, #7171ae, #10bce7);
+    /*background-image: linear-gradient(to bottom right, #ff6b6b, #7171ae, #10bce7);*/
     min-height: 100vh;
 }

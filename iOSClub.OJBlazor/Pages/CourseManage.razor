@@ -107,8 +107,11 @@ else
                 await using var dbContextAsync = await DbFactory.CreateDbContextAsync();
                 if (string.IsNullOrEmpty(courseModel.HashName))
                 {
-                    dbContextAsync.CourseModels.Add(new CourseModel()
-                        { HashName = courseModel.ToString().GetHash(), Name = courseModel.Name, Intro = courseModel.Intro });
+                    var c = new CourseModel()
+                        { HashName = courseModel.ToString().GetHash(), Name = courseModel.Name, Intro = courseModel.Intro };
+                    dbContextAsync.CourseModels.Add(c);
+                    CourseModels.Add(c);
+                    
                 }
                 else
                 {
@@ -116,16 +119,17 @@ else
                     if (result == null) return true;
                     result.Name = courseModel.Name;
                     result.Intro = courseModel.Intro;
+                    model!.Name = courseModel.Name;
+                    model.Intro = courseModel.Intro;
                 }
 
                 await dbContextAsync.SaveChangesAsync();
-
+                StateHasChanged();
                 return true;
             }
         };
 
         await DialogService.ShowEditDialog(option);
-        StateHasChanged();
     }
 
     public class DialogCourseModel
