@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +15,7 @@
       <PackageReference Include="BootstrapBlazor" Version="8.1.5" />
       <PackageReference Include="BootstrapBlazor.CodeEditor" Version="8.0.0" />
       <PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.0.1" />
+      <PackageReference Include="BootstrapBlazor.Markdown" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,6 +40,9 @@
     <ItemGroup>
       <Content Update="Pages\IndexLayout.razor.css">
         <DependentUpon>IndexLayout.razor</DependentUpon>
+      </Content>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
 

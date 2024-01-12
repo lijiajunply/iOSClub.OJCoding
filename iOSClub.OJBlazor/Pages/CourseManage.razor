@@ -2,6 +2,7 @@
 @using Microsoft.EntityFrameworkCore
 @using global::OJBlazor.Share.DataModels
 @using System.ComponentModel.DataAnnotations
+@using System.Globalization
 @inject IDbContextFactory<OJContext> DbFactory
 @inject NavigationManager navigation
 @inject MessageService MessageService
@@ -21,36 +22,88 @@
         @foreach (var item in CourseModels)
         {
             <Button Color="Color.None" IsAsync="true" OnClick="@(() => CourseModelDialog(item))">
-                <Card IsCenter="true" IsShadow="true" class="item">
-                    <BodyTemplate>
-                        <h6>@item.Name</h6>
-                        <p>@item.Intro</p>
-                    </BodyTemplate>
-                </Card>
+                <ContextMenuZone>
+                    <ContextMenuTrigger>
+                        <Card IsCenter="true" IsShadow="true" class="item">
+                            <BodyTemplate>
+                                <h6>@item.Name</h6>
+                                <p>@item.Intro</p>
+                            </BodyTemplate>
+                        </Card>
+                    </ContextMenuTrigger>
+                    <ContextMenu>
+                        <ContextMenuItem Icon="fa-solid fa-trash" Text="删除" OnClick="@(async (_, _) => await Remove(item))"/>
+                        <ContextMenuItem Icon="fa-solid fa-pen-to-square" Text="编辑子内容" OnClick="@((_, _) => EditChildren(item))"/>
+                    </ContextMenu>
+                </ContextMenuZone>
             </Button>
         }
     </Row>
 }
 else
 {
-    <Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
-        <Button Color="Color.None">
-            <Card IsCenter="true" IsShadow="true" class="item">
-                <BodyTemplate>
-                    <i class="fa-solid fa-plus 4x content"></i>
-                </BodyTemplate>
-            </Card>
-        </Button>
-        @foreach (var item in TestModels)
-        {
-            <Card IsCenter="true" IsShadow="true" class="item">
-                <BodyTemplate>
-                    <h6>@item.Name</h6>
-                    <p>@item.Intro</p>
-                </BodyTemplate>
-            </Card>
-        }
-    </Row>
+    if (!IsEditing)
+    {
+        <Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
+            <Button Color="Color.None" OnClick="@(() => { IsEditing = true; FormModel = new DialogTestModel(); })">
+                <Card IsCenter="true" IsShadow="true" class="item">
+                    <BodyTemplate>
+                        <i class="fa-solid fa-plus 4x content"></i>
+                    </BodyTemplate>
+                </Card>
+            </Button>
+            @foreach (var item in TestModels)
+            {
+                <Card IsCenter="true" IsShadow="true" class="item">
+                    <BodyTemplate>
+                        <h6>@item.Name</h6>
+                        <p>@item.Intro</p>
+                    </BodyTemplate>
+                </Card>
+            }
+        </Row>
+    }
+    else
+    {
+        <ValidateForm OnValidSubmit="OnTestSubmit" Model="@FormModel">
+            <FloatingLabel PlaceHolder="Name" DisplayText="测试名称" @bind-Value="@FormModel.Name" TValue="string"/>
+            <Divider/>
+            <br/>
+            <h4>简介:</h4>
+            <Markdown Language="@CultureInfo.CurrentUICulture.Name" @bind-Html="@FormModel.Intro"/>
+            <Divider/>
+            <br/>
+            <h4>测试参数:</h4>
+            <Row ColSpan="4" ItemsPerRow="ItemsPerRow.Four">
+                <FloatingLabel PlaceHolder="Name" DisplayText="类型" @bind-Value="@ArgRecord.Type" TValue="string"/>
+                <FloatingLabel PlaceHolder="Name" DisplayText="变量名称" @bind-Value="@ArgRecord.Name" TValue="string"/>
+                <FloatingLabel PlaceHolder="Name" DisplayText="变量值" @bind-Value="@ArgRecord.Value" TValue="string"/>
+                <Button OnClick="@AddArg">添加</Button>
+            </Row>
+            <ListGroup TItem="ArgRecord" Items="@FormModel.Arg" GetItemDisplayText="@(x => x.ToString())"/>
+            <Divider/>
+            <br/>
+            <h4>代码:</h4>
+            <div class="row form-inline g-3">
+                <div class="col-12 col-sm-6">
+                    <Select TValue="string" OnSelectedItemChanged="@(item => { FormModel.Language = item.Value; return Task.CompletedTask; })" ShowLabel="true" DisplayText="Language">
+                        <Options>
+                            <SelectOption Text="JavaScript" Value="javascript"></SelectOption>
+                            <SelectOption Text="CSharp" Value="csharp"></SelectOption>
+                            <SelectOption Text="Razor" Value="razor"></SelectOption>
+                            <SelectOption Text="Json" Value="json"></SelectOption>
+                        </Options>
+                    </Select>
+                </div>
+                <div class="col-12">
+                    <CodeEditor Theme="vs" Value="@FormModel.Code" Language="@FormModel.Language"/>
+                </div>
+            </div>
+            <Divider/>
+            <br/>
+            <Button ButtonType="ButtonType.Submit">完成</Button>
+        </ValidateForm>
+    }
 }
 
 @code {
@@ -58,6 +111,9 @@ else
 
     private List<CourseModel> CourseModels { get; set; } = new();
     private List<TestModel> TestModels { get; set; } = new();
+    private bool IsEditing { get; set; }
+    private DialogTestModel FormModel { get; set; } = new();
+    private ArgRecord ArgRecord { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,6 +135,21 @@ else
 
             TestModels = c.Tests;
         }
+    }
+
+    #region CourseModel
+
+    private Task EditChildren(CourseModel model)
+    {
+        navigation.NavigateTo($"CourseManage/{model.HashName}", true);
+        return Task.CompletedTask;
+    }
+
+    private async Task Remove(CourseModel model)
+    {
+        await using var dbContextAsync = await DbFactory.CreateDbContextAsync();
+        dbContextAsync.Remove(model);
+        await dbContextAsync.SaveChangesAsync();
     }
 
     private async Task CourseModelDialog(CourseModel? model)
@@ -111,7 +182,6 @@ else
                         { HashName = courseModel.ToString().GetHash(), Name = courseModel.Name, Intro = courseModel.Intro };
                     dbContextAsync.CourseModels.Add(c);
                     CourseModels.Add(c);
-                    
                 }
                 else
                 {
@@ -145,6 +215,28 @@ else
         [Required]
         [AutoGenerateColumn(Order = 40, Sortable = true)]
         public string Intro { get; set; } = "";
+    }
+
+    #endregion
+
+    public class DialogTestModel
+    {
+        public string Name { get; set; } = "";
+        public string Intro { get; set; } = "";
+        public List<ArgRecord> Arg { get; set; } = new();
+        public string Code { get; set; } = "";
+        public string Language { get; set; } = "";
+    }
+
+    private async Task OnTestSubmit(EditContext arg)
+    {
+        await using var context = await DbFactory.CreateDbContextAsync();
+    }
+
+    private void AddArg()
+    {
+        if (string.IsNullOrEmpty(ArgRecord.Type) || string.IsNullOrEmpty(ArgRecord.Name)) return;
+        FormModel.Arg.Add(ArgRecord);
     }
 
 }
