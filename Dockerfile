@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["iOSClub.OJBlazor/iOSClub.OJBlazor.csproj", "iOSClub.OJBlazor/"]
 RUN dotnet restore "iOSClub.OJBlazor/iOSClub.OJBlazor.csproj"
 COPY . .
 WORKDIR "/src/iOSClub.OJBlazor"
