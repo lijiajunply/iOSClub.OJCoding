@@ -1,16 +1,53 @@
 ﻿@page "/Course/{Text?}"
+@using global::OJBlazor.Share.DataModels
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<OJContext> DbFactory
+@inject NavigationManager navigation
+@inject MessageService MessageService
 
 <PageTitle>@Title</PageTitle>
 
+<h1>@Model.Name</h1>
+<Divider/>
+<br/>
+<p>@((MarkupString)Model.Intro)</p>
+<Divider/>
+<br/>
+<Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
+    @foreach (var item in Model.Tests)
+    {
+        <a href="@($"Test/{item.HashName}")">
+            <Card IsCenter="true" IsShadow="true" class="item">
+                <BodyTemplate>
+                    <h6>@item.Name</h6>
+                    <p>@((MarkupString)item.Intro)</p>
+                </BodyTemplate>
+            </Card>
+        </a>
+    }
+</Row>
+
 @code {
-    [Parameter]
-    public string? Text { get; set; }
+    [Parameter] public string? Text { get; set; }
 
     private string Title { get; set; } = "课程";
+    private CourseModel Model { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        if (string.IsNullOrEmpty(Text)) return;
+        await using var context = await DbFactory.CreateDbContextAsync();
+        var c = await context.CourseModels.Include(x => x.Tests).FirstOrDefaultAsync(x => x.HashName == Text);
+        if (c == null)
+        {
+            await MessageService.Show(new MessageOption() { Content = "没有内容，正在为您跳回" });
+            navigation.NavigateTo("", true);
+            return;
+        }
+
+        Model = c;
+        Title = Model.Name;
     }
 
 }

@@ -33,6 +33,6 @@ public static class HashStatic
     public static string GetHash(this string? s)
     {
         s += DateTime.Now.ToString("s");
-        return Convert.ToBase64String(SHA512.HashData(Encoding.UTF8.GetBytes(s))).ToUpper();
+        return Convert.ToBase64String(SHA512.HashData(Encoding.UTF8.GetBytes(s))).ToUpper().Replace("/","%");
     }
 }

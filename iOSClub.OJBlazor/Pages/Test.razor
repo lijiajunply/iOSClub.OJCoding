@@ -1,0 +1,54 @@
+﻿@page "/Test/{Text?}"
+@using global::OJBlazor.Share.DataModels
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<OJContext> DbFactory
+@inject NavigationManager navigation
+@inject MessageService MessageService
+
+<PageTitle>@Title</PageTitle>
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <div>
+        <p>@((MarkupString)Model.Intro)</p>
+    </div>
+    <div>
+        <CodeEditor Theme="vs" @bind-Value="@Model.Code" Language="@Model.Language"/>
+        <Button IsAsync="true" OnClickWithoutRender="OnClickWithoutRender">提交</Button>
+        <p>@Result</p>
+    </div>
+</Row>
+
+@code {
+    [Parameter] public string? Text { get; set; }
+
+    private string Title { get; set; } = "测试";
+    private TestModel Model { get; set; } = new();
+    private string Result { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (string.IsNullOrEmpty(Text)) return;
+        await using var context = await DbFactory.CreateDbContextAsync();
+        var testModel = await context.TestModels.FirstOrDefaultAsync(x => x.HashName == Text);
+        if (testModel == null)
+        {
+            await MessageService.Show(new MessageOption() { Content = "没有内容，正在为您跳回" });
+            navigation.NavigateTo("", true);
+            return;
+        }
+
+        Model = testModel;
+        Title = testModel.Name;
+    }
+
+    private Task OnClickWithoutRender()
+    {
+        var test = $"{Model.Code}\n{Model.TestCode}";
+        var model = new DebugModel(DebugModel.StringToLang(Model.Language), test);
+        Result = model.RunCode();
+        model.Dispose();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}

@@ -2,7 +2,6 @@
 @using Microsoft.EntityFrameworkCore
 @using global::OJBlazor.Share.DataModels
 @using System.ComponentModel.DataAnnotations
-@using System.Globalization
 @inject IDbContextFactory<OJContext> DbFactory
 @inject NavigationManager navigation
 @inject MessageService MessageService
@@ -27,7 +26,7 @@
                         <Card IsCenter="true" IsShadow="true" class="item">
                             <BodyTemplate>
                                 <h6>@item.Name</h6>
-                                <p>@item.Intro</p>
+                                <p>@((MarkupString)item.Intro)</p>
                             </BodyTemplate>
                         </Card>
                     </ContextMenuTrigger>
@@ -45,7 +44,7 @@ else
     if (!IsEditing)
     {
         <Row ItemsPerRow="ItemsPerRow.Three" ColSpan="4">
-            <Button Color="Color.None" OnClick="@(() => { IsEditing = true; FormModel = new DialogTestModel(); })">
+            <Button Color="Color.None" OnClick="@(() => OpenEdit(null))">
                 <Card IsCenter="true" IsShadow="true" class="item">
                     <BodyTemplate>
                         <i class="fa-solid fa-plus 4x content"></i>
@@ -54,12 +53,14 @@ else
             </Button>
             @foreach (var item in TestModels)
             {
-                <Card IsCenter="true" IsShadow="true" class="item">
-                    <BodyTemplate>
-                        <h6>@item.Name</h6>
-                        <p>@item.Intro</p>
-                    </BodyTemplate>
-                </Card>
+                <Button Color="Color.None" OnClick="@(() => OpenEdit(item))">
+                    <Card IsCenter="true" IsShadow="true" class="item">
+                        <BodyTemplate>
+                            <h6>@item.Name</h6>
+                            <p>@((MarkupString)item.Intro)</p>
+                        </BodyTemplate>
+                    </Card>
+                </Button>
             }
         </Row>
     }
@@ -70,35 +71,27 @@ else
             <Divider/>
             <br/>
             <h4>简介:</h4>
-            <Markdown Language="@CultureInfo.CurrentUICulture.Name" @bind-Html="@FormModel.Intro"/>
+            <Markdown @bind-Html="@FormModel.Intro"/>
             <Divider/>
             <br/>
-            <h4>测试参数:</h4>
-            <Row ColSpan="4" ItemsPerRow="ItemsPerRow.Four">
-                <FloatingLabel PlaceHolder="Name" DisplayText="类型" @bind-Value="@ArgRecord.Type" TValue="string"/>
-                <FloatingLabel PlaceHolder="Name" DisplayText="变量名称" @bind-Value="@ArgRecord.Name" TValue="string"/>
-                <FloatingLabel PlaceHolder="Name" DisplayText="变量值" @bind-Value="@ArgRecord.Value" TValue="string"/>
-                <Button OnClick="@AddArg">添加</Button>
-            </Row>
-            <ListGroup TItem="ArgRecord" Items="@FormModel.Arg" GetItemDisplayText="@(x => x.ToString())"/>
+            <h4>使用语言</h4>
+            <Select TValue="string" OnSelectedItemChanged="@(item => { FormModel.Language = item.Value; return Task.CompletedTask; })">
+                <Options>
+                    <SelectOption Text="CSharp" Value="csharp"/>
+                    <SelectOption Text="C" Value="c"/>
+                    <SelectOption Text="C++" Value="cpp"/>
+                    <SelectOption Text="Python" Value="python"/>
+                    <SelectOption Text="Java" Value="java"/>
+                </Options>
+            </Select>
             <Divider/>
             <br/>
             <h4>代码:</h4>
-            <div class="row form-inline g-3">
-                <div class="col-12 col-sm-6">
-                    <Select TValue="string" OnSelectedItemChanged="@(item => { FormModel.Language = item.Value; return Task.CompletedTask; })" ShowLabel="true" DisplayText="Language">
-                        <Options>
-                            <SelectOption Text="JavaScript" Value="javascript"></SelectOption>
-                            <SelectOption Text="CSharp" Value="csharp"></SelectOption>
-                            <SelectOption Text="Razor" Value="razor"></SelectOption>
-                            <SelectOption Text="Json" Value="json"></SelectOption>
-                        </Options>
-                    </Select>
-                </div>
-                <div class="col-12">
-                    <CodeEditor Theme="vs" Value="@FormModel.Code" Language="@FormModel.Language"/>
-                </div>
-            </div>
+            <CodeEditor Theme="vs" @bind-Value="@FormModel.Code" Language="@FormModel.Language"/>
+            <Divider/>
+            <br/>
+            <h4>测试代码:</h4>
+            <CodeEditor Theme="vs" @bind-Value="@FormModel.TestCode" Language="@FormModel.Language"/>
             <Divider/>
             <br/>
             <Button ButtonType="ButtonType.Submit">完成</Button>
@@ -113,7 +106,6 @@ else
     private List<TestModel> TestModels { get; set; } = new();
     private bool IsEditing { get; set; }
     private DialogTestModel FormModel { get; set; } = new();
-    private ArgRecord ArgRecord { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -215,28 +207,77 @@ else
         [Required]
         [AutoGenerateColumn(Order = 40, Sortable = true)]
         public string Intro { get; set; } = "";
+        public override string ToString()
+        {
+            return $"Name={Name};Intro={Intro};";
+        }
     }
 
     #endregion
 
     public class DialogTestModel
     {
+        public string HashName { get; set; } = "";
         public string Name { get; set; } = "";
         public string Intro { get; set; } = "";
-        public List<ArgRecord> Arg { get; set; } = new();
+        public string TestCode { get; set; } = "";
         public string Code { get; set; } = "";
         public string Language { get; set; } = "";
+        public override string ToString()
+        {
+            return $"Name={Name};Intro={Intro};Code={Code};TestCode={TestCode};Language={Language};";
+        }
+    }
+
+    private void OpenEdit(TestModel? model)
+    {
+        FormModel = new DialogTestModel();
+        if (model != null)
+        {
+            FormModel.Language = model.Language;
+            FormModel.Code = model.Code;
+            FormModel.Intro = model.Intro;
+            FormModel.TestCode = model.TestCode;
+            FormModel.HashName = model.HashName;
+            FormModel.Name = model.Name;
+        }
+        IsEditing = true;
+        StateHasChanged();
     }
 
     private async Task OnTestSubmit(EditContext arg)
     {
-        await using var context = await DbFactory.CreateDbContextAsync();
-    }
+        if (string.IsNullOrEmpty(FormModel.Intro) || string.IsNullOrEmpty(FormModel.Name)) return;
+        await using var dbContextAsync = await DbFactory.CreateDbContextAsync();
+        var course = await dbContextAsync.CourseModels.Include(courseModel => courseModel.Tests).FirstOrDefaultAsync(x => x.HashName == Text);
+        if(course == null)return;
+        if (string.IsNullOrEmpty(FormModel.HashName))
+        {
+            var model = new TestModel
+            {
+                HashName = FormModel.ToString().GetHash(),
+                Language = FormModel.Language,
+                Code = FormModel.Code,
+                Intro = FormModel.Intro,
+                TestCode = FormModel.TestCode,
+                Name = FormModel.Name
+            };
+            course.Tests.Add(model);
+            TestModels.Add(model);
+        }
+        else
+        {
+            var result = course.Tests.FirstOrDefault(x => x.HashName == FormModel.HashName);
+            if(result is null)return;
+            result.Language = FormModel.Language;
+            result.Code = FormModel.Code;
+            result.Intro = FormModel.Intro;
+            result.TestCode = FormModel.TestCode;
+            result.Name = FormModel.Name;
+        }
 
-    private void AddArg()
-    {
-        if (string.IsNullOrEmpty(ArgRecord.Type) || string.IsNullOrEmpty(ArgRecord.Name)) return;
-        FormModel.Arg.Add(ArgRecord);
+        await dbContextAsync.SaveChangesAsync();
+        StateHasChanged();
     }
 
 }
