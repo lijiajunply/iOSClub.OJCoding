@@ -32,7 +32,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get install -y \
     sudo \
     curl \
-    wget \
+    wget
     
 # 安装 python3 和 pip
 RUN apt-get install -y python3 python3-pip
