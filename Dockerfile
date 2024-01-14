@@ -38,7 +38,7 @@ RUN apt-get install -y mysql-server mysql-client
 # 安装 git
 RUN apt-get install -y git
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/sdk:7.0  AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "iOSClub.OJBlazor.dll"]
