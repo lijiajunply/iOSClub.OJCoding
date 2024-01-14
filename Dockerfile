@@ -13,7 +13,7 @@ COPY . .
 WORKDIR "/src/iOSClub.OJBlazor"
 RUN dotnet build "iOSClub.OJBlazor.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "iOSClub.OJBlazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
