@@ -17,8 +17,13 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "iOSClub.OJBlazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM mcr.microsoft.com/dotnet/sdk:7.0  AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "iOSClub.OJBlazor.dll"]
+
 # 基于 ubuntu:20.04 镜像
-FROM ubuntu:20.04
+FROM ubuntu:20.04 AS Ubuntu
 # 设置时区为上海
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -37,8 +42,3 @@ RUN pip3 install flask
 RUN apt-get install -y mysql-server mysql-client
 # 安装 git
 RUN apt-get install -y git
-
-FROM mcr.microsoft.com/dotnet/sdk:7.0  AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "iOSClub.OJBlazor.dll"]
